@@ -72,35 +72,41 @@
   {
     "type": "support_ticket",
     "merchant_id": "m1",
-    "message": "Checkout broken after migration",
-    "error": "401 payment API",
-    "migration_stage": "post-headless"
+    "message": "How do I change my storefront theme colors?",
+    "error": null,
+    "migration_stage": "pre-migration"
   },
   {
     "type": "support_ticket",
     "merchant_id": "m2",
-    "message": "Orders failing after headless switch",
-    "error": "401 payment API",
+    "message": "Button text slightly misaligned on product page",
+    "error": "UI cosmetic",
     "migration_stage": "post-headless"
   },
   {
-  "type": "support_ticket",
-  "merchant_id": "m3",
-  "message": "Payment fails on new site",
-  "error": "401 payment API",
-  "migration_stage": "post-headless"
+    "type": "platform_error",
+    "service": "logging",
+    "error_code": "INFO_LOG_ROTATION",
+    "count": 2
   },
   {
-  "type": "support_ticket",
-  "merchant_id": "m4",
-  "message": "Site is slow and checkout intermittently fails with unknown errors",
-  "error": "Timeout / Generic 500",
-  "migration_stage": "post-headless"
+    "type": "support_ticket",
+    "merchant_id": "m3",
+    "message": "Search results take 3 seconds longer to load",
+    "error": "Performance degradation",
+    "migration_stage": "post-headless"
   },
   {
     "type": "platform_error",
-    "service": "checkout",
-    "error_code": "AUTH_401",
-    "count": 19
+    "service": "inventory",
+    "error_code": "TIMEOUT_SYNC",
+    "count": 14
+  },
+  {
+    "type": "support_ticket",
+    "merchant_id": "m4",
+    "message": "All customer checkout attempts failing with payment errors",
+    "error": "401 payment API",
+    "migration_stage": "post-headless"
   }
 ]
