@@ -6,6 +6,24 @@ from decision import decide
 from actions import act
 from memory import load_memory, update_memory 
 
+# Custom CSS to force specific button colors
+st.markdown("""
+    <style>
+    /* Approve Button (Primary) - Green */
+    div.stButton > button[kind="primary"] {
+        background-color: #28a745;
+        color: white;
+        border: None;
+    }
+    /* Reject Button (Secondary/Standard) - Red */
+    div.stButton > button[kind="secondary"] {
+        background-color: #dc3545;
+        color: white;
+        border: None;
+    }
+    </style>
+    """, unsafe_allow_html=True)
+
 # Rule: Prioritize Clarity. Use a clean, non-interactive title.
 st.markdown("### CyberCipher | SaaS Migration Support")
 
@@ -21,27 +39,20 @@ if 'execution_result' not in st.session_state:
     st.session_state.execution_result = None
 
 # Button to trigger the agent loop
-if st.button("Scan for New Migration Issues", type="primary"):
+if st.button("Scan for New Migration Issues", type="secondary"):
     with st.spinner("Analyzing signals and filtering known issues..."):
-        # Load long-term memory to provide context and filter results
         memory = load_memory() 
-        
-        # 1. Observe all current signals
         context = observe() 
         
-        # 2. Filter: Only identify merchants NOT in memory (includes 'pending' and 'resolved')
-        # This prevents re-scanning issues that loop.py already caught.
+        # Filter merchants to avoid re-scanning
         new_tickets = [
             t for t in context.get("tickets", []) 
             if t["merchant_id"] not in memory.get("helped_merchants", {})
         ]
         
         if new_tickets:
-            # Only perform reasoning on brand new signals to save tokens
             new_context = {"tickets": new_tickets, "errors": context.get("errors", [])}
             analysis = reason(new_context, memory) 
-            
-            # Generate decision for this analysis
             decision_result = decide(analysis)
             
             st.session_state.current_issue = analysis
@@ -49,7 +60,6 @@ if st.button("Scan for New Migration Issues", type="primary"):
             st.session_state.action_status = None
             st.session_state.execution_result = None
             
-            # Update UI Audit Log
             st.session_state.audit_log.append({
                 "Root Cause": analysis["root_cause"],
                 "Confidence": f"{analysis['confidence']*100:.0f}%",
@@ -65,11 +75,21 @@ if st.session_state.current_issue:
     decision_result = st.session_state.current_decision
     st.markdown("---")
     
-    # 1. Reasoning Chain (Transparency Rule)
-    st.markdown("**Agent Reasoning Chain**")
-    st.info(f"**Hypothesis:** {issue['hypothesis']}\n\n**Logic:** {issue['reasoning']}")
+    # 1. Integrated Reasoning Box
+    st.markdown("#### Agent Reasoning Chain")
     
-    # 2. Metrics (Clarity Rule)
+    logic_points = issue['reasoning'].split(". ")
+    formatted_logic = ""
+    for point in logic_points:
+        if point.strip():
+            formatted_logic += f"\n- {point.strip().capitalize()}."
+
+    st.info(
+        f"**Hypothesis:** {issue['hypothesis']}  \n\n"
+        f"**Key Findings:** \n{formatted_logic}"
+    )
+    
+    # 2. Metrics
     col1, col2, col3 = st.columns(3)
     with col1:
         st.markdown(f"**Confidence Score:** {issue['confidence']*100:.0f}%")
@@ -81,82 +101,71 @@ if st.session_state.current_issue:
     with col3:
         if decision_result:
             st.markdown(f"**Action Type:** {decision_result['action_type']}")
-            tool = decision_result.get('tool', 'None')
-            st.markdown(f"**Tool:** `{tool}`")
+            st.markdown(f"**Tool:** `{decision_result.get('tool', 'None')}`")
     
-    # 3. Proposed Action
-    st.markdown("**Proposed Action**")
-    st.write(issue["recommended_action"])
+    # 3. Structured Proposed Action Plan
+    st.markdown("#### Proposed Action Plan")
+    action_steps = issue["recommended_action"].split(". ")
+    for step in action_steps:
+        if step.strip():
+            st.markdown(f"* {step.strip()}")
     
-    # 4. Decision Reasoning
-    if decision_result:
-        st.markdown("**Decision Logic**")
-        st.caption(decision_result.get('reason', 'N/A'))
+    # 4. Human-in-the-Loop Buttons
+    st.write("") 
     
-    # 5. Human-in-the-Loop Buttons
-    c1, c2 = st.columns([1, 4])
+    # Using 2 equal columns to ensure buttons are the same size
+    c1, c2 = st.columns(2)
     
-    if c1.button("Approve", disabled=(st.session_state.action_status == "Action Approved & Resolved")):
+    is_action_taken = st.session_state.action_status is not None
+    
+    # Approve Button - Green via CSS + Primary Type
+    if c1.button("Approve", type="primary", use_container_width=True, disabled=is_action_taken):
         with st.spinner("Executing action..."):
-            # Execute the tool using proper decision
             execution_result = act(decision_result, issue)
-            
-            # Store execution result
             st.session_state.execution_result = execution_result
             
-            # Identify merchants and flip status to 'resolved'
             context = observe()
             current_merchants = [t["merchant_id"] for t in context.get("tickets", [])]
-            
-            # Update memory with resolved status
             update_memory(current_merchants, issue, status="resolved") 
             
             st.session_state.action_status = "Action Approved & Resolved"
+            st.rerun() 
         
-    if c2.button("Reject", type="primary", disabled=(st.session_state.action_status == "Action Rejected")):
+    # Reject Button - Red via CSS + Secondary Type
+    if c2.button("Reject", type="secondary", use_container_width=True, disabled=is_action_taken):
         st.session_state.action_status = "Action Rejected"
         st.session_state.execution_result = None
+        st.rerun()
 
-    # 6. Display Action Status
+    # Status Feedback
     if st.session_state.action_status:
         if "Approved" in st.session_state.action_status:
-            st.success(f"{st.session_state.action_status}")
+            st.success(f"**{st.session_state.action_status}**")
         else:
-            st.warning(f"{st.session_state.action_status}")
-    
-    # 7. Display Execution Results
-    if st.session_state.execution_result:
-        result = st.session_state.execution_result
-        
-        st.markdown("---")
-        st.markdown("**Execution Details**")
-        
-        # Show status badge
-        if result['status'] == 'executed':
-            st.success(f"{result['message']}")
-            
-            # Show tool execution details
-            if result.get('tool_result'):
-                with st.expander("Tool Execution Log", expanded=True):
-                    st.json(result['tool_result'])
-                    
-        elif result['status'] == 'pending_approval':
-            st.info(f"{result['message']}")
-            
-        elif result['status'] == 'monitoring':
-            st.info(f"{result['message']}")
-            
-        elif result['status'] == 'failed':
-            st.error(f"{result['message']}")
-            if result.get('error'):
-                st.code(result['error'])
+            st.warning(f"**{st.session_state.action_status}**")
 
-# 8. Audit Log (Consistency Rule)
+# 5. Display Execution Results
+if st.session_state.execution_result:
+    result = st.session_state.execution_result
+    st.markdown("---")
+    st.markdown("#### Execution Details")
+    
+    if result['status'] == 'executed':
+        st.success(f"{result['message']}")
+        if result.get('tool_result'):
+            with st.expander("View Full Tool Execution Log", expanded=False):
+                st.json(result['tool_result'])
+    elif result['status'] in ['pending_approval', 'monitoring']:
+        st.info(f"{result['message']}")
+    elif result['status'] == 'failed':
+        st.error(f"{result['message']}")
+
+# 6. Audit Log
 st.markdown("---")
 st.markdown("**Decision History**")
 if st.session_state.audit_log:
     st.table(pd.DataFrame(st.session_state.audit_log))
 
-# 9. Memory Inspection (Auditability)
+# 7. Memory Inspection
 with st.expander("Debug: View Agent Long-Term Memory"):
     st.json(load_memory())
