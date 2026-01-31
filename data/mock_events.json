@@ -1,0 +1,22 @@
+[
+  {
+    "type": "support_ticket",
+    "merchant_id": "m1",
+    "message": "Checkout broken after migration",
+    "error": "401 payment API",
+    "migration_stage": "post-headless"
+  },
+  {
+    "type": "support_ticket",
+    "merchant_id": "m2",
+    "message": "Orders failing after headless switch",
+    "error": "401 payment API",
+    "migration_stage": "post-headless"
+  },
+  {
+    "type": "platform_error",
+    "service": "checkout",
+    "error_code": "AUTH_401",
+    "count": 19
+  }
+]
