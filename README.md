@@ -295,17 +295,6 @@ The agent stores:
 
 ---
 
-## Future Enhancements
-
-- [ ] Multi-tenant support with role-based access control
-- [ ] Integration with ticketing systems (Zendesk, Jira)
-- [ ] Advanced anomaly detection with ML models
-- [ ] Slack/Teams notifications for critical issues
-- [ ] A/B testing framework for auto-fix strategies
-- [ ] Performance metrics and success rate tracking
-
----
-
 ## Contributing
 
 Contributions are welcome! Please:
