@@ -27,7 +27,7 @@ st.markdown("""
     </style>
     """, unsafe_allow_html=True)
 
-st.markdown("### CyberCipher | SaaS Migration Support")
+st.markdown("### Triage | SaaS Migration Support")
 
 # Initialize Session State
 if 'audit_log' not in st.session_state:

@@ -4,7 +4,7 @@ from reasoner import reason
 from memory import load_memory, update_memory
 
 def start_safe_loop():
-    print("🛡️ CyberCipher Loop Active (Token-Safe Mode).")
+    print("🛡️ Triage Loop Active (Token-Safe Mode).")
     
     # --- FIXED STARTUP LOGIC ---
     # We only initialize the error count. 

@@ -1,14 +1,14 @@
-# CyberCipher
+# Triage
 
 **AI-Powered SaaS Migration Support Agent**
 
-An autonomous AI agent designed to detect, diagnose, and resolve migration issues for SaaS platforms transitioning to headless architecture. CyberCipher uses pattern recognition, long-term memory, and confidence-based decision-making to proactively handle support tickets and platform errors.
+An autonomous AI agent designed to detect, diagnose, and resolve migration issues for SaaS platforms transitioning to headless architecture. Triage uses pattern recognition, long-term memory, and confidence-based decision-making to proactively handle support tickets and platform errors.
 
 ---
 
 ## Overview
 
-CyberCipher monitors migration-related support tickets and platform errors in real-time, learning from historical data to identify root causes and recommend or execute fixes automatically. The system implements a human-in-the-loop approach for high-risk actions while autonomously handling low-risk, high-confidence scenarios.
+Triage monitors migration-related support tickets and platform errors in real-time, learning from historical data to identify root causes and recommend or execute fixes automatically. The system implements a human-in-the-loop approach for high-risk actions while autonomously handling low-risk, high-confidence scenarios.
 
 ### Key Features
 
@@ -24,7 +24,7 @@ CyberCipher monitors migration-related support tickets and platform errors in re
 
 ## Architecture
 
-CyberCipher follows a modular agent architecture:
+Triage follows a modular agent architecture:
 
 ```
 ┌─────────────┐
@@ -74,8 +74,8 @@ CyberCipher follows a modular agent architecture:
 
 1. **Clone the repository**
    ```bash
-   git clone https://github.com/yourusername/CyberCipher.git
-   cd CyberCipher
+   git clone https://github.com/yourusername/Triage.git
+   cd Triage
    ```
 
 2. **Install dependencies**
@@ -122,7 +122,7 @@ python test_auto_fix.py
 ## Project Structure
 
 ```
-CyberCipher/
+Triage/
 │
 ├── actions.py              # Action execution logic
 ├── app.py                  # Streamlit dashboard interface
@@ -264,7 +264,7 @@ The Streamlit dashboard (`app.py`) provides:
 
 ## AI Reasoning System
 
-CyberCipher uses Google Gemini with a specialized prompt that:
+Triage uses Google Gemini with a specialized prompt that:
 
 1. **Compares signals against memory** to detect patterns
 2. **Calculates confidence scores** based on historical matches
