@@ -74,8 +74,8 @@ Triage follows a modular agent architecture:
 
 1. **Clone the repository**
    ```bash
-   git clone https://github.com/yourusername/Triage.git
-   cd Triage
+   git clone https://github.com/yourusername/CyberCipher.git
+   cd CyberCipher
    ```
 
 2. **Install dependencies**
